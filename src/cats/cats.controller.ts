@@ -44,6 +44,6 @@ export class CatsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.catsService.remove(+id);
+    return this.catqưesService.remove(+id);
   }
 }
