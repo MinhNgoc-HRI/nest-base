@@ -27,7 +27,7 @@ jobs:
        - name: run-yarn
          run: 'yarn'
        - name: run-lint
-         run: 'yarn-lint'
+         run: 'yarn lint'
   build:
     runs-on: ubuntu-latest
     name: build on ubuntu-latest
