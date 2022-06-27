@@ -20,13 +20,13 @@ jobs:
     name: jobs 1
     steps:
       - name: print
-      - run: echo Hello job1
+        run: echo Hello job1
   jobs2:
     runs-on: ubuntu-latest
     name: jobs 2
     steps:
       - name: print
-      - run: echo Hello job1
+        run: echo Hello job1
   job3:
     name: jobs 3
     runs-on: ubuntu-latest
@@ -34,4 +34,4 @@ jobs:
     needs: [jobs1, jobs2]
     steps:
       - name: print
-      - run: echo Hello job1
+        run: echo Hello job1
