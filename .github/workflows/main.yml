@@ -15,23 +15,23 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  jobs1:
+  check-lint:
     runs-on: ubuntu-latest
-    name: jobs 1
+    name: check-lint
+    steps:
+       - uses: actions/checkout@v3
+       - uses: actions/setup-node@v3
+         with: 
+            node-version: 16
+            cache: 'yarn'
+       - name: run-yarn
+         run: 'yarn'
+       - name: run-lint
+         run: 'yarn-lint'
+  build:
+    runs-on: ubuntu-latest
+    name: build on ubuntu-latest
+    needs: [check-lint]
     steps:
       - name: print
-        run: echo Hello job1
-  jobs2:
-    runs-on: ubuntu-latest
-    name: jobs 2
-    steps:
-      - name: print
-        run: echo Hello job1
-  job3:
-    name: jobs 3
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    needs: [jobs1, jobs2]
-    steps:
-      - name: print
-        run: echo Hello job1
+        run: echo build successfully
