@@ -1,0 +1,96 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - develop
+      - staging
+      - main
+  pull_request:
+
+jobs:
+  check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn
+
+      - name: Lint
+        run: yarn lint
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/develop'
+    name: Deploy Development
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: copy env develop
+        run: cp .env.development .env
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Build React App
+        run: yarn && CI=false yarn build
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync build/ s3://homeloanfrontend --delete
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    name: Deploy Staging
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: copy env staging
+        run: cp .env.staging .env
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Build React App
+        run: yarn && CI=false yarn build
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync build/ s3://homeloanfrontend --delete
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy Production
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: copy env production
+        run: cp .env.production .env
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Build React App
+        run: yarn && CI=false yarn build
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync build/ s3://homeloanfrontend --delete
