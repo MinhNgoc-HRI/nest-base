@@ -1,4 +1,4 @@
-import { IsEmpty, IsNotEmpty, ValidationArguments } from 'class-validator';
+import { IsNotEmpty, ValidationArguments } from 'class-validator';
 export class CreateCatDto {
   @IsNotEmpty({
     message: (e: ValidationArguments) => {

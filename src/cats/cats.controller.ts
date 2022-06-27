@@ -6,12 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  HttpCode,
-  Header,
-  Redirect,
   Query,
-  ParseIntPipe,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
@@ -44,6 +39,6 @@ export class CatsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.catqưesService.remove(+id);
+    return this.catsService.remove(+id);
   }
 }
